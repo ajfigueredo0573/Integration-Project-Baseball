@@ -1,0 +1,204 @@
+__author__ = "Alejandro Figueredo"
+"""An integration of everything I have learned about programming!"""
+baseball_position = ['C', '1B', '2B', '3B', 'SS', 'LF', 'CF', 'RF']
+
+
+def greeting_the_user():
+    """The purpose of this function is to ask the name of the user by asking
+    for him or her name.
+    name - an string for the user's name"""
+    name = input("Who do I have the pleasure to work with?\n")
+    print(("Hello!" * 2), name)
+
+
+def introducing_user_to_project():
+    """The purpose of this function is to salute the user by the name
+    inputted on the top calling the function greeting_the_user()."""
+    print("Welcome to my Integration Project!")
+    print(" This project should help baseball players to:\n "
+          "Calculate their stats after a certain amount of games")
+    greeting_the_user()
+
+
+introducing_user_to_project()
+
+# Getting information on the player
+print("Now let's start with some basic information on the player we are "
+      "going to evaluate")
+player_name = input("Player's full name\n")
+player_team = input("Player's team\n")
+player_position = input("Player's position\n")
+player_position = player_position.upper()
+while player_position not in baseball_position:
+    player_position = input("Invalid input. Try insertion initials like "
+                            "1B, C...\n")
+    player_position = player_position.upper()
+    # Emily (who is tutor) helped me develop this function.
+
+
+# Getting information on how the player did on the game
+# Times on base == hits + walks(BB) + hit by pitches(HBP)
+# Getting on base by an error counts as a missed at bat
+# Legal AB's count just outs and hits
+amount_of_games = None
+got_good_input = False
+while not got_good_input:
+    try:
+        amount_of_games = int(
+            input("How many games did the player participated "
+                  "in?\n"))
+        got_good_input = True
+    except ValueError:
+        print("That was not a valid number.Try again...")
+
+
+def calculate_player_stats_for_game(ab_per_game, on_base_per_game):
+    """The purpose of this function is to make the calculations of the stats
+    of the player in n amount of games"""
+    if on_base_per_game > 0:
+        number_of_hits = input("How many total hits on the day?\n")
+        number_of_hits = int(number_of_hits)
+        while not number_of_hits.isnumeric():
+            number_of_hits = input("Error. Please enter a numeric value:\n")
+        if on_base_per_game > number_of_hits:
+            sac_fly = input("Any sac fly or bunts?\n")
+            while not sac_fly.isnumeric():
+                sac_fly = input("Error. Please enter a numeric value:\n")
+                sac_fly = int(sac_fly)
+            walks_bb = input("How many times did you walked?\n")
+            while not walks_bb.isnumeric():
+                walks_bb = input("Error. Please enter a numeric value:\n")
+                walks_bb = int(walks_bb)
+        else:
+            walks_bb = 0
+            sac_fly = 0
+    else:
+        number_of_hits = 0
+        walks_bb = 0
+        sac_fly = 0
+
+    number_of_hit_bp = on_base_per_game - (number_of_hits + walks_bb)
+    legal_ab = ab_per_game - (walks_bb + number_of_hit_bp + sac_fly)
+
+    base_hits = input("Of the " + str(number_of_hits) + " hits that " +
+                      player_name + " got on last night's game, "
+                                    "how many were base hits?\n")
+    while not base_hits.isnumeric():
+        base_hits = input("Error. Please enter a numeric value:\n")
+        base_hits = int(base_hits)
+
+    if base_hits != number_of_hits:
+        doubles = input("How many were doubles?\n")
+        while not doubles.isnumeric():
+            doubles = input("Error. Please enter a numeric value:\n")
+            doubles = int(doubles)
+        if (base_hits + doubles) != number_of_hits:
+            triples = input("How many were triples?\n")
+            while not triples.isnumeric():
+                triples = input("Error. Please enter a numeric value:\n")
+                triples = int(triples)
+            if (base_hits + doubles + triples) != number_of_hits:
+                home_runs = input("How many were HR?\n")
+                while not home_runs.isnumeric():
+                    home_runs = input("Error. Please enter a numeric value:\n")
+                    home_runs = int(home_runs)
+            else:
+                home_runs = 0
+        else:
+            triples = 0
+            home_runs = 0
+    else:
+        doubles = 0
+        triples = 0
+        home_runs = 0
+
+    # Calculations Numeric operators: + (addition), - (subtraction), *
+    # (multiplication), ** (power function),
+    # / (division), // (floor division),
+    # % (module division, which finds the remainder) String Operator: + (which
+    # concatenates two strings without a space between them) AVG(average,
+    # also known as BA)represents how many times the
+    # player collected a hit per 10 at bats. OBP(on-base percentage, also
+    # known as OBA)represents how many times the
+    # hitter got on base every 10 at bats. This stat counts hits, walks,
+    # and hit by pitches. Slugging % expresses total
+    # bases (including all extra base hits) divided by at bats.
+    # Slugging % = (base_hits + (2 *doubles) + (3 * triples) +
+    # (4 * home_runs))/(ab_per_game)
+    doubles *= 2
+    triples *= 3
+    home_runs *= 4
+    player_avg = number_of_hits / legal_ab
+    player_obp = on_base_per_game / ab_per_game
+    player_slugging = \
+        (base_hits + doubles + triples + home_runs) / ab_per_game
+    avg_meaning = ((player_avg * (10 ** 3)) // ((10 % 9) * 100))
+
+    # Results
+    print("The " + player_position,
+          player_name + " from " + player_team + " is hitting " +
+          format(player_avg, '.3f') + "/" + format(player_obp, '.3f') + "/" +
+          format(player_slugging, '.3f'))
+
+    print(" ")
+    print(
+        "In other words, this hitter is getting on base " +
+        format(avg_meaning, '.0f') + " times\nevery 10 at bats.")
+
+
+game_number = 1
+
+for games in range(amount_of_games):
+    print("You are entering stats for game number", game_number)
+    number_of_ab = input("How many AB's?\n")
+    while not number_of_ab.isnumeric():
+        number_of_ab = input("Error. Please enter a numeric value:\n")
+        number_of_ab = int(number_of_ab)
+    times_on_base = input("How many times did the player get on base?\n")
+    while not times_on_base.isnumeric():
+        times_on_base = input("Error. Please enter a numeric value:\n")
+        times_on_base = int(times_on_base)
+    calculate_player_stats_for_game(number_of_ab, times_on_base)
+    game_number += 1
+print(" ")
+decision = input('Do you wish to look at more options?\nYes or No?')
+decision = decision.lower()
+while (decision != 'yes') and (decision != 'no'):
+    decision = input('Invalid Input. Try again.\n'
+                     'Do you wish to look at more options?\nYes or No\n')
+    decision = decision.lower()
+
+continue_to_next_option = True
+if decision == "no":
+    continue_to_next_option = False
+    print("Okay! See you next time!")
+else:
+    print("Okay! Select one of these options:")
+    print("a) Add one more game")
+    print("b) Add n amount of games")
+    print("c) Exit the program")
+    choice_from_user = input("Please, insert your option")
+    choice_from_user = choice_from_user.lower()
+    while choice_from_user != "a" and choice_from_user != "b" and \
+            choice_from_user != "c":
+        choice_from_user = input("Invalid input! Please, try again")
+        choice_from_user = choice_from_user.lower()
+    if ('a' == choice_from_user) or (choice_from_user == 'b') or (
+            choice_from_user == "c"):
+        if choice_from_user == "a":
+            print("Let's work on it")
+        elif choice_from_user == "b":
+            print("Okay")
+            amount_of_games_added = int(input("How many more games are you "
+                                              "adding?"))
+        else:
+            print("Exiting...")
+
+# Citation: MacLennan, Ashley. "A complete beginner's guide to baseball stats:
+# Batting statistics, and what they
+# mean". https://www.blessyouboys.com/2019/1/8/18171919/baseball-stats-
+# for-beginners-batting-average-on-base
+# -percentage-explained#:~:text=The%20next%20part%20of%20understanding
+# ,%2C%20and%20slugging%20(
+# SLG).&text=A%20fourth%20batting%20stat%20of,base%20percentage%20and%
+# 20slugging%20percentage.
